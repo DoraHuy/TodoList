@@ -5,6 +5,7 @@ import TodoFilter from '@/app/components/TodoFilter'
 import TodoList from '@/app/components/TodoList'
 import { useEffect, useState } from 'react'
 
+type FilterType = 'all' | 'todo' | 'done' | 'deleted'
 export interface Todo {
   id: number
   content: string
@@ -27,9 +28,12 @@ const mockTodos: Todo[] = [
   }
 ]
 
+
+
 const TodoContainer = () => {
 
   const [todos, setTodos] = useState<Todo[]>(mockTodos)
+  const [filter, setFilter] = useState<FilterType>('all')
 
   const addTodo = (content: string) => {
 
@@ -76,21 +80,27 @@ const TodoContainer = () => {
     setTodos(() => [...updateTodos])
   }
 
-  const todoAll = () => {
-    return todos
+  const getFilteredTodos = () => {
+    switch (filter) {
+      case 'todo':
+        return todos.filter(todo => !todo.isDone && !todo.isDelete)
+      case 'done':
+        return todos.filter(todo => todo.isDone && !todo.isDelete)
+      case 'deleted':
+        return todos.filter(todo => todo.isDelete)
+      default:
+        return todos.filter(todo => !todo.isDelete)
+    }
   }
 
-  const todoDone = () => {
-    return todos.filter((todo) => todo.isDone)
-  }
-
+  const filteredTodos = getFilteredTodos()
 
   return (
     <div className='flex flex-col gap-4 py-8'>
       <NewTodos addTodo={addTodo} />
-      <TodoFilter />
-      <TodoList todos={todos} doneTodo={doneTodo} editTodo={editTodo} deleteTodo={deleteTodo} />
-      <TodoActions />
+      <TodoFilter filter={filter} filterTodo={setFilter} />
+      <TodoList todos={filteredTodos} doneTodo={doneTodo} editTodo={editTodo} deleteTodo={deleteTodo} />
+      <TodoActions todos={todos} setTodos={setTodos} />
     </div>
   )
 }

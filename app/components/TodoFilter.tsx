@@ -1,23 +1,35 @@
-import React from 'react'
+interface FilterProps {
+  filter: 'all' | 'todo' | 'done' | 'deleted';
+  filterTodo: (filter: 'all' | 'todo' | 'done' | 'deleted') => void
+}
 
-const TodoFilter = () => {
+const TodoFilter = ({ filter, filterTodo }: FilterProps) => {
+
+  const filters = [
+    { label: 'Tất cả', value: 'all' },
+    { label: 'Todo', value: 'todo' },
+    { label: 'Đã hoàn thành', value: 'done' },
+    { label: 'Đã xóa', value: 'deleted' }
+  ]
+
   return (
-    <div className='flex flex-col items-center gap-4'>
-      <h2 className='font-bold text-2xl'>
-        Todo List
-      </h2>
-      <div className='flex justify-between w-[80%] gap-3 flex-1'>
-        <button className='flex-1 bg-[#00A4B8] text-white py-2 rounded-md'>
-          All
-        </button>
-        <button className='flex-1 bg-[#00A4B8] text-white py-2 rounded-md'>
-          Done
-        </button>
-        <button className='flex-1 bg-[#00A4B8] text-white py-2 rounded-md'>
-          Todo
-        </button>
+    <div className="flex justify-center">
+      <div className='flex justify-center gap-2 my-4 w-[80%]'>
+        {filters.map((f) => (
+          <button
+            key={f.value}
+            onClick={() => filterTodo(f.value as any)}
+            className={`px-4 py-2 rounded-md transition-colors flex-1 ${filter === f.value
+              ? 'bg-[#00A4B8] text-white'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+          >
+            {f.label}
+          </button>
+        ))}
       </div>
     </div>
+
   )
 }
 
